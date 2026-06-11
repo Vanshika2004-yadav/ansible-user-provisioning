@@ -1,0 +1,40 @@
+---
+- name: Create developers group
+  group:
+    name: "{{ group_name }}"
+    state: present
+
+- name: Create users
+  user:
+    name: "{{ item }}"
+    group: "{{ group_name }}"
+    create_home: yes
+    shell: /bin/bash
+    state: present
+  loop: "{{ users }}"
+
+- name: Deploy SSH public key
+  authorized_key:
+    user: "{{ item }}"
+    state: present
+    key: "{{ lookup('file', role_path + '/files/user_access_key.pub') }}"
+  loop: "{{ users }}"
+
+- name: Configure password expiration
+  command: >
+    chage
+    -M {{ password_max_days }}
+    -m {{ password_min_days }}
+    -W {{ password_warn_days }}
+    {{ item }}
+  loop: "{{ users }}"
+
+- name: Validate users exist
+  command: id {{ item }}
+  register: user_validation
+  changed_when: false
+  loop: "{{ users }}"
+
+- name: Display validation output
+  debug:
+    var: user_validation.results

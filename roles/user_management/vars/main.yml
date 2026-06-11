@@ -1,0 +1,10 @@
+group_name: developers
+
+users:
+  - user1
+  - user2
+  - user3
+
+password_max_days: 90
+password_min_days: 7
+password_warn_days: 14

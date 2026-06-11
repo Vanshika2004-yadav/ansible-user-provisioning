@@ -1,0 +1,7 @@
+---
+- name: User Provisioning
+  hosts: target
+  become: true
+
+  roles:
+    - user_management
