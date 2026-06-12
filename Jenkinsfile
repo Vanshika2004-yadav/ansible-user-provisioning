@@ -20,6 +20,13 @@ pipeline {
             }
         }
 
+        stage('Manual Approval') {
+            steps {
+                input message: 'Code pushed to GitHub. Do you want to run the Ansible user provisioning playbook?',
+                      ok: 'Approve and Run'
+            }
+        }
+
         stage('Run User Provisioning Playbook') {
             steps {
                 sh 'ansible-playbook playbooks/site.yml'
